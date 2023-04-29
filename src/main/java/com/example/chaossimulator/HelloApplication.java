@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /*
-Another problem
+Maybe this time it's the good time
  */
 
 public class HelloApplication extends Application {
