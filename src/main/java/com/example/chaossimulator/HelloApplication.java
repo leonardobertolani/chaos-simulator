@@ -7,11 +7,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-/*
-Now I can modify whatever I want
-Fuck off
- */
-
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
