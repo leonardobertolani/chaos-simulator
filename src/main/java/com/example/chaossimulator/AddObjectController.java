@@ -1,5 +1,8 @@
 package com.example.chaossimulator;
 
+import com.example.chaossimulator.objects.BallsSettings;
+import com.example.chaossimulator.objects.PVector;
+import com.example.chaossimulator.objects.Sprite;
 import javafx.fxml.FXML;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
@@ -27,7 +30,7 @@ public class AddObjectController {
 
     public void initialize() {
         //objectColorPicker.promptTextProperty().addListener(((observable, oldValue, newValue) -> sprite.setView(new Circle())));
-        xPositionField.textProperty().addListener(((observable, oldValue, newValue) -> sprite.setXLocation(Double.parseDouble(newValue))));
+        xPositionField.textProperty().addListener((observable, oldValue, newValue) -> sprite.setXLocation(Double.parseDouble(newValue)));
         yPositionField.textProperty().addListener(((observable, oldValue, newValue) -> sprite.setYLocation(Double.parseDouble(newValue))));
 
         xVelocityField.textProperty().addListener(((observable, oldValue, newValue) -> sprite.setXVelocity(Double.parseDouble(newValue))));
@@ -40,7 +43,7 @@ public class AddObjectController {
     public Sprite getNewObject() {  return sprite; }
 
     public void setPhysicalObject() {
-        sprite = new Sprite(new Circle(10, Color.WHITE));
+        sprite = new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.GREEN), new PVector(2 / 4, 2 / 2), new PVector(4, 0), new PVector(0, 1));
 
 
     }

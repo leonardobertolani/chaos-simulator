@@ -1,4 +1,4 @@
-package com.example.chaossimulator;
+package com.example.chaossimulator.objects;
 
 public class PVector {
     public static PVector ZERO = new PVector(0, 0);

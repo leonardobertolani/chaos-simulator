@@ -1,4 +1,4 @@
-package com.example.chaossimulator;
+package com.example.chaossimulator.objects;
 
 public class BallsSettings {
     public static int SPRITE_COUNT = 5;
@@ -7,4 +7,5 @@ public class BallsSettings {
     public static double SPRITE_DEFAULT_MASS = 10;
     public static PVector FORCE_WIND = new PVector(0.0, 0.0);
     public static PVector FORCE_GRAVITY = new PVector(0.0, 5.0);
+    public static double SPRITE_RADIUS = 5;
 }
