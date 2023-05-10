@@ -21,6 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
+/*
+
+TO DO
+
+- quando apri la finestra per creare una nuova pallina, ferma tutto e ricomincia al premere di ok o annulla
+ */
+
 public class SimulatorWindowController {
     @FXML private AnchorPane simulationPane;
     @FXML private Button simulationButton;
@@ -63,8 +71,12 @@ public class SimulatorWindowController {
          */
 
         Color COLORS[] = {Color.RED, Color.ORANGE, Color.YELLOW, Color.YELLOWGREEN, Color.GREEN, Color.CYAN, Color.BLUE, Color.BLUEVIOLET, Color.PURPLE, Color.BROWN};
-        for(double n = 1; n <= 20; ++n) {
-            physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, COLORS[(int)((n-1)/2.0)]), new PVector(w + n/10000, 0), new PVector(0, 0), new PVector(0, 0.07)));
+        for(double n = 1; n <= BallsSettings.SPRITE_COUNT; ++n) {
+            physicalObjects.add(new BouncingSprite(
+                    new Circle(BallsSettings.SPRITE_RADIUS, COLORS[(int)((n-1)/(BallsSettings.SPRITE_COUNT/10.0))]),
+                    new PVector(500 + n/1000, 200),
+                    new PVector(0, 0),
+                    new PVector(0, 0.07)));
         }
 
         simulationPane.getChildren().addAll(physicalObjects);
@@ -98,6 +110,7 @@ public class SimulatorWindowController {
                 s.update();
                 s.display();
                 checkBallBounds(s, curve);
+                //System.out.println("energia totale: " + (s.getVelocity().y*s.getVelocity().y + simulationPane.getHeight() - s.getLocation().y));
             });
         }
     }
@@ -126,12 +139,6 @@ public class SimulatorWindowController {
         }
         // analytical curve collision
         if(s.isBouncing(curve, simulationPane)) {
-            //System.out.println(s.toString() + "color ball bouncing!");
-            //System.out.println("Bounce!");
-            //timer.stop();
-            //s.setVelocity(new PVector(0, 0));
-            //s.setAcceleration(new PVector(0, 0));
-            //s.getLocation().y = curve.computeY(s.getLocation().x);
             s.applyBounce(curve);
         }
 
@@ -151,6 +158,7 @@ public class SimulatorWindowController {
 
     @FXML
     public void onAddNewObject() {
+
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("add-object-view.fxml"));

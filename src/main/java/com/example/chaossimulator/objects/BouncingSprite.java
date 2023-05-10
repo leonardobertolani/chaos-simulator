@@ -4,6 +4,13 @@ import com.example.chaossimulator.curves.AnalyticalCurve;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
+/*
+
+TO DO
+
+- aggiusta o cancella adjustCollision
+ */
+
 public class BouncingSprite extends Sprite {
 
     /**
@@ -57,13 +64,6 @@ public class BouncingSprite extends Sprite {
 
                 location.y = -(-velocity.y / velocity.x) * (location.x + xIncrement) - (-location.x * (-velocity.y) - location.y * velocity.x) / velocity.x;
                 location.x += xIncrement;
-                /*
-                PVector p = new PVector(0, 0);
-                Sprite scia = new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), new PVector(location.x, location.y), p, p);
-                pane.getChildren().add(scia);
-                scia.display();
-
-                 */
             }
 
 
@@ -75,13 +75,6 @@ public class BouncingSprite extends Sprite {
             while (location.y < (curve.computeY(location.x) - BallsSettings.SPRITE_RADIUS)) {
 
                 location.y += yIncrement;
-                /*
-                PVector p = new PVector(0, 0);
-                Sprite scia = new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), new PVector(location.x, location.y), p, p);
-                pane.getChildren().add(scia);
-                scia.display();
-
-                 */
             }
 
 
@@ -112,7 +105,6 @@ public class BouncingSprite extends Sprite {
         PVector yBaseVector = new PVector(-xBaseVector.y, xBaseVector.x);
 
         double magnitude = velocity.magnitude();
-        //System.out.println("magnitudine velocità iniziale: " + magnitude);
         double xBaseVelocityAngle = Math.acos(velocity.dot(xBaseVector) / magnitude);
 
         // Getting the x and y components of the vector respecting of the (xBaseVector, yBaseVector) base system
@@ -125,10 +117,9 @@ public class BouncingSprite extends Sprite {
         // Resetting the vectors using its altered x and y components
         velocity = PVector.add(PVector.multiply(xBaseVector, velocity.x), PVector.multiply(yBaseVector, velocity.y));
 
-        System.out.println("DIFFERENZA magnitudine velocità iniziale - finale: " + (magnitude - velocity.magnitude()));
-
         // Reconverting the y coordinate
         velocity.y *= -1;
+        velocity = velocity.add(PVector.multiply(acceleration, -1));
 
     }
 

@@ -13,25 +13,6 @@ cancellare i setter, praticamente non li uso (anzi non li uso proprio!!)
 
 public class AnalyticalParabola implements AnalyticalCurve {
 
-    /**
-     * Since the parabola is a non-invertible function, when trying
-     * to determine the x coordinate given the y the equation return
-     * two points: a right_side point and a left-side point.
-     * This constant is used to decide the right-side point of the
-     * result when using the computeX() function.
-     */
-    public static final boolean RIGHT_SIDE_X = true;
-
-
-    /**
-     * Since the parabola is a non-invertible function, when trying
-     * to determine the x coordinate given the y the equation return
-     * two points: a right_side point and a left-side point.
-     * This constant is used to decide the left-side point of the
-     * result when using the computeX() function.
-     */
-    public static final boolean LEFT_SIDE_X = false;
-
     private double a;
     private double b;
     private double c;
@@ -42,7 +23,7 @@ public class AnalyticalParabola implements AnalyticalCurve {
 
 
     /**
-     * Construct a parabola given its main known coefficients a, b and c and a
+     * Constructs a parabola given its main known coefficients a, b and c and a
      * GraphicsContext as an absolute frame of reference
      * @param a coefficient of the squared term
      * @param b coefficient of the linear term
@@ -51,6 +32,8 @@ public class AnalyticalParabola implements AnalyticalCurve {
      * @param gc frame of reference for the parabola
      */
     public AnalyticalParabola(double a, double b, double c, double xDrag, GraphicsContext gc) {
+
+        // Remember that the y simulation axe is inverted
 
         // Define the properties
         this.a = -a;
@@ -68,14 +51,14 @@ public class AnalyticalParabola implements AnalyticalCurve {
 
 
     /**
-     * Construct a standard parabola given a GraphicsContext as an absolute
+     * Constructs a standard parabola given a GraphicsContext as an absolute
      * frame of reference
      * @param gc frame of reference for the parabola
      */
     public AnalyticalParabola(GraphicsContext gc) {
 
         // Define the properties
-        this.a = -1.0/300;
+        this.a = -1.0/200; // DEFAULT: -1.0/300
         this.b = 0;
         this.c = gc.getCanvas().getHeight() - 30;
         this.xDrag = -400;

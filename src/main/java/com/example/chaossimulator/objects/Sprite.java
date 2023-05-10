@@ -1,13 +1,9 @@
 package com.example.chaossimulator.objects;
 
-import com.example.chaossimulator.curves.AnalyticalCurve;
+
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 public class Sprite extends Region {
     PVector location;
@@ -128,127 +124,6 @@ public class Sprite extends Region {
     public void display() {
         setTranslateX(location.x);
         setTranslateY(location.y);
-    }
-
-    public boolean isBouncing(AnalyticalCurve curve, AnchorPane pane) {
-
-        if(location.y + velocity.y > curve.computeY(location.x + velocity.x)) {
-            // is bouncing
-
-            // now I adjust the position of the ball so that it shows really close to the curve
-            if(velocity.x != 0) {
-                double xIncrement = velocity.x/100;
-                location.y = -( -velocity.y/velocity.x )*(location.x + xIncrement)  -  (-location.x*(-velocity.y) - location.y* velocity.x)/velocity.x;
-                location.x += xIncrement;
-
-                while(location.y < (curve.computeY(location.x) - BallsSettings.SPRITE_RADIUS) ) {
-
-                    location.y = -( -velocity.y/velocity.x )*(location.x + xIncrement)  -  (-location.x*(-velocity.y) - location.y* velocity.x)/velocity.x;
-                    location.x += xIncrement;
-                /*
-                PVector p = new PVector(0, 0);
-                Sprite scia = new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), new PVector(location.x, location.y), p, p);
-                pane.getChildren().add(scia);
-                scia.display();
-
-                 */
-                }
-
-
-            } else {
-
-                double yIncrement = velocity.y/100;
-                location.y += yIncrement;
-
-                while(location.y < (curve.computeY(location.x) - BallsSettings.SPRITE_RADIUS) ) {
-
-                    location.y += yIncrement;
-                /*
-                PVector p = new PVector(0, 0);
-                Sprite scia = new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), new PVector(location.x, location.y), p, p);
-                pane.getChildren().add(scia);
-                scia.display();
-
-                 */
-                }
-
-
-            }
-
-
-
-            return true;
-
-
-        }
-
-        return false;
-
-
-        /*
-        TENTATIVO 2
-
-
-        System.out.println(location.y);
-        System.out.println(curve.computeY(location.x));
-
-        if(location.y - curve.computeY(location.x) > BallsSettings.SPRITE_RADIUS) {
-            // is bouncing
-            return true;
-        }
-
-        return false;
-
-         */
-
-
-
-        /*
-        TENTATIVO 1
-
-        // Set A point at the same y of the Sprite but on the curve
-        PVector A = new PVector(
-                curve.computeX(location.y, curve.chooseXCoordinate(location.x)),
-                location.y);
-
-
-
-        System.out.println(location.x);
-        System.out.println(curve.chooseXCoordinate(location.x));
-        Sprite Apoint = new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), A);
-        pane.getChildren().add(Apoint);
-        Apoint.display();
-
-        // Set B point at the same x of the Sprite but on the curve
-        PVector B = new PVector(location.x, curve.computeY(location.x));
-
-        Sprite Bpoint = new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), B);
-        pane.getChildren().add(Bpoint);
-        Bpoint.display();
-
-        // For a line of equation ax + by + c = 0 and two points, A and B, we have that
-        // v = ( -b, a ) = (  ( A.x - B.x ) , ( A.y - B.y ) )
-        // so a = ( A.y - B.y ) and b = -( A.x - B.x )
-
-        // At this point we know that, given a point P = (Xp, Yp),
-        // | aXp + bYp + c | = | ( -( A.y - B.y ), ( A.x - B.x ) ) * ( xp - A.x, yp - A.y )
-        // that is the numerator of the distance line-point formula.
-        PVector directorCoefficient = new PVector( ( A.x - B.x ) , ( A.y - B.y ) );
-        PVector lineCoefficient = new PVector( -( A.y - B.y ), ( A.x - B.x ) );
-
-        double numerator = Math.abs(PVector.dot(
-                        lineCoefficient,
-                        new PVector(location.x - A.x, location.y - B.y)));
-
-        // The denominator is simply the magnitude of the line coefficient
-        double denominator = directorCoefficient.magnitude();
-
-        // distance line-point = | aXp + bYp + c | / sqrt(directorCoefficient.magnitude)
-        double distance = numerator / denominator;
-
-        return distance <= BallsSettings.SPRITE_RADIUS;
-
-         */
     }
 
     @Override
