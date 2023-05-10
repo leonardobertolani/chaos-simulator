@@ -3,8 +3,8 @@ package com.example.chaossimulator;
 import com.example.chaossimulator.curves.AnalyticalCurve;
 import com.example.chaossimulator.curves.AnalyticalParabola;
 import com.example.chaossimulator.objects.BallsSettings;
+import com.example.chaossimulator.objects.BouncingSprite;
 import com.example.chaossimulator.objects.PVector;
-import com.example.chaossimulator.objects.Sprite;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,9 +30,9 @@ public class SimulatorWindowController {
 
 
     /**
-     * A List of Sprite objects used in the simulation
+     * A List of BouncingSprite objects used in the simulation
      */
-    List<Sprite> physicalObjects;
+    List<BouncingSprite> physicalObjects;
     AnimationTimer timer;
     boolean isSimulating;
     AnalyticalCurve curve;
@@ -49,13 +49,23 @@ public class SimulatorWindowController {
         gc.setStroke(Color.WHITE);
 
 
-        physicalObjects.add(new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.WHITE), new PVector(w/2, 20), new PVector(0, 2), new PVector(0, 0.1)));
-        physicalObjects.add(new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.BLUE), new PVector(w / 2, 0), new PVector(0, 5), new PVector(0, 0.1)));
-        physicalObjects.add(new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), new PVector(w, 0), new PVector(3, 2), new PVector(0, 0.1)));
-        physicalObjects.add(new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), new PVector(w, 0), new PVector(-3, 0), new PVector(0, 0.1)));
-        physicalObjects.add(new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), new PVector(w, 50), new PVector(1, -2), new PVector(0, 0.1)));
-        physicalObjects.add(new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.YELLOW), new PVector(w, 0), new PVector(-5, 0), new PVector(0, 0.1)));
-        physicalObjects.add(new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.GREEN), new PVector(400, 0), new PVector(0, 0), new PVector(0, 0.1)));
+        //physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.WHITE), new PVector(300, 50), new PVector(0, 2), new PVector(0, 0.1)));
+
+        /*
+        physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.BLUE), new PVector(w, 0), new PVector(0, 0), new PVector(0, 0.1)));
+        physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), new PVector(w + 0.005, 0), new PVector(0, 0), new PVector(0, 0.1)));
+        physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), new PVector(w + 0.01, 0), new PVector(0, 0), new PVector(0, 0.1)));
+        physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), new PVector(w + 0.015, 0), new PVector(0, 0), new PVector(0, 0.1)));
+        physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.YELLOW), new PVector(w + 0.02, 0), new PVector(0, 0), new PVector(0, 0.1)));
+        physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.GREEN), new PVector(w + 0.025, 0), new PVector(0, 0), new PVector(0, 0.1)));
+
+
+         */
+
+        Color COLORS[] = {Color.RED, Color.ORANGE, Color.YELLOW, Color.YELLOWGREEN, Color.GREEN, Color.CYAN, Color.BLUE, Color.BLUEVIOLET, Color.PURPLE, Color.BROWN};
+        for(double n = 1; n <= 20; ++n) {
+            physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, COLORS[(int)((n-1)/2.0)]), new PVector(w + n/10000, 0), new PVector(0, 0), new PVector(0, 0.07)));
+        }
 
         simulationPane.getChildren().addAll(physicalObjects);
         physicalObjects.forEach(s -> s.display());
@@ -83,17 +93,16 @@ public class SimulatorWindowController {
     private void mainLoop() {
         if(isSimulating) {
             // Do simulation stuff
-            //for(Iterator<Sprite> iterator = physicalObjects.iterator(); iterator.hasNext(); ) {
+            //for(Iterator<BouncingSprite> iterator = physicalObjects.iterator(); iterator.hasNext(); ) {
             physicalObjects.forEach(s -> {
-                  s.update();
-                  s.display();
-                  checkBallBounds(s, curve);
-                  s.display();
+                s.update();
+                s.display();
+                checkBallBounds(s, curve);
             });
         }
     }
 
-    private void checkBallBounds(Sprite s, AnalyticalCurve curve) {
+    private void checkBallBounds(BouncingSprite s, AnalyticalCurve curve) {
         double radius = ((Circle) (s.getView())).getRadius();
         // upper horizontal wall collision
         if (s.getLocation().y < radius) {
@@ -118,10 +127,12 @@ public class SimulatorWindowController {
         // analytical curve collision
         if(s.isBouncing(curve, simulationPane)) {
             //System.out.println(s.toString() + "color ball bouncing!");
+            //System.out.println("Bounce!");
             //timer.stop();
-            s.setVelocity(new PVector(0, 0));
-            s.setAcceleration(new PVector(0, 0));
+            //s.setVelocity(new PVector(0, 0));
+            //s.setAcceleration(new PVector(0, 0));
             //s.getLocation().y = curve.computeY(s.getLocation().x);
+            s.applyBounce(curve);
         }
 
     }

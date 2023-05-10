@@ -1,6 +1,7 @@
 package com.example.chaossimulator;
 
 import com.example.chaossimulator.objects.BallsSettings;
+import com.example.chaossimulator.objects.BouncingSprite;
 import com.example.chaossimulator.objects.PVector;
 import com.example.chaossimulator.objects.Sprite;
 import javafx.fxml.FXML;
@@ -26,7 +27,7 @@ public class AddObjectController {
 
     @FXML private TextField yVelocityField;
 
-    Sprite sprite;
+    BouncingSprite sprite;
 
     public void initialize() {
         //objectColorPicker.promptTextProperty().addListener(((observable, oldValue, newValue) -> sprite.setView(new Circle())));
@@ -40,10 +41,10 @@ public class AddObjectController {
         yAccelerationField.textProperty().addListener(((observable, oldValue, newValue) -> sprite.setYAcceleration(Double.parseDouble(newValue))));
     }
 
-    public Sprite getNewObject() {  return sprite; }
+    public BouncingSprite getNewObject() {  return sprite; }
 
     public void setPhysicalObject() {
-        sprite = new Sprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.GREEN), new PVector(2 / 4, 2 / 2), new PVector(4, 0), new PVector(0, 1));
+        sprite = new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.GREEN), new PVector(2 / 4, 2 / 2), new PVector(4, 0), new PVector(0, 1));
 
 
     }
