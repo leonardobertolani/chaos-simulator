@@ -17,7 +17,7 @@ public class BouncingSprite extends Sprite {
      * Constant used to apply very small increments during the operations
      * on the coordinates.
      */
-    final double SMALL_INCREMENT = 0.05;
+    final double dX_INCREMENT = 0.05;
 
     public BouncingSprite(Node view) {
         super(view);
@@ -93,8 +93,8 @@ public class BouncingSprite extends Sprite {
 
         // The first versor is given from the slope of the curve
         PVector xBaseVector = new PVector(
-                2*SMALL_INCREMENT,
-                -(curve.computeY(location.x + SMALL_INCREMENT) - curve.computeY(location.x - SMALL_INCREMENT))
+                2*dX_INCREMENT,
+                -(curve.computeY(location.x + dX_INCREMENT) - curve.computeY(location.x - dX_INCREMENT))
         );
         xBaseVector = xBaseVector.normalize();
 

@@ -81,7 +81,7 @@ public interface AnalyticalCurve {
      *        Consider the constants RIGHT_SIDE_X and LEFT_SIDE_X to choose
      * @return the x coordinate of the point
      */
-    double computeX(double y, boolean side);
+    //double computeX(double y, boolean side);
 
 
     /**
@@ -91,5 +91,5 @@ public interface AnalyticalCurve {
      * @return a boolean representing the right side or the left side, according
      *              to the RIGHT_SIDE_X and LEFT_SIDE_X constants notation
      */
-    boolean chooseXCoordinate(double x);
+    //boolean chooseXCoordinate(double x);
 }

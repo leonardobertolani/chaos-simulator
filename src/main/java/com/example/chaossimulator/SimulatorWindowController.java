@@ -1,10 +1,10 @@
 package com.example.chaossimulator;
 
-import com.example.chaossimulator.curves.AnalyticalCurve;
-import com.example.chaossimulator.curves.AnalyticalParabola;
+import com.example.chaossimulator.curves.*;
 import com.example.chaossimulator.objects.BallsSettings;
 import com.example.chaossimulator.objects.BouncingSprite;
 import com.example.chaossimulator.objects.PVector;
+import com.example.chaossimulator.objects.Sprite;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +17,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,10 +32,19 @@ TO DO
 
 public class SimulatorWindowController {
     @FXML private AnchorPane simulationPane;
-    @FXML private Button simulationButton;
-    @FXML private TextField velocityInputText;
-    @FXML private Slider velocitySlider;
     @FXML private Canvas curveCanvas;
+    @FXML private ChoiceBox<String> chCurve;
+
+    public static final String[] curveTypes = {
+            "com.example.chaossimulator.curves.AnalyticalParabola",
+            "com.example.chaossimulator.curves.AnalyticalHyperbole",
+            "com.example.chaossimulator.curves.AnalyticalEllipse",
+            "com.example.chaossimulator.curves.AnalyticalSine",
+            "com.example.chaossimulator.curves.AnalyticalHyperbolicCosine",
+            "com.example.chaossimulator.curves.AnalyticalCircumference"
+    };
+    @FXML private Button simulationButton;
+
 
 
     /**
@@ -49,8 +59,8 @@ public class SimulatorWindowController {
     public void initializeSimulation() {
 
         // Initialization
-        double h = simulationPane.getWidth();
-        double w = simulationPane.getHeight();
+        double h = simulationPane.getHeight();
+        double w = simulationPane.getWidth();
         isSimulating = false;
         physicalObjects = new ArrayList<>();
         GraphicsContext gc = curveCanvas.getGraphicsContext2D();
@@ -74,18 +84,29 @@ public class SimulatorWindowController {
         for(double n = 1; n <= BallsSettings.SPRITE_COUNT; ++n) {
             physicalObjects.add(new BouncingSprite(
                     new Circle(BallsSettings.SPRITE_RADIUS, COLORS[(int)((n-1)/(BallsSettings.SPRITE_COUNT/10.0))]),
-                    new PVector(500 + n/1000, 200),
+                    new PVector(700 + n/1000, 200),
                     new PVector(0, 0),
-                    new PVector(0, 0.07)));
+                    new PVector(0, 0.5)));
         }
 
         simulationPane.getChildren().addAll(physicalObjects);
-        physicalObjects.forEach(s -> s.display());
+        physicalObjects.forEach(Sprite::display);
 
 
+        chCurve.getItems().addAll(curveTypes);
+        chCurve.setOnAction((event) -> {
+            try {
+                // Try generating a new AnalyticalCurve (the class may not exist)
+                curve = (AnalyticalCurve) Class.forName(chCurve.getValue()).getDeclaredConstructor(GraphicsContext.class).newInstance(gc);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        curve = new AnalyticalParabola(gc);
-        AnalyticalCurve.drawCurve(curve, gc);
+            //restartSimulation();
+            gc.clearRect(0, 0, curveCanvas.getWidth(), curveCanvas.getHeight()); // Clearing the canvas
+            AnalyticalCurve.drawCurve(curve, gc); // Drawing the new curve
+        });
+        chCurve.getSelectionModel().select(0);
 
     }
 
@@ -103,16 +124,14 @@ public class SimulatorWindowController {
     }
 
     private void mainLoop() {
-        if(isSimulating) {
-            // Do simulation stuff
-            //for(Iterator<BouncingSprite> iterator = physicalObjects.iterator(); iterator.hasNext(); ) {
-            physicalObjects.forEach(s -> {
-                s.update();
-                s.display();
-                checkBallBounds(s, curve);
-                //System.out.println("energia totale: " + (s.getVelocity().y*s.getVelocity().y + simulationPane.getHeight() - s.getLocation().y));
-            });
-        }
+        // Do simulation stuff
+        //for(Iterator<BouncingSprite> iterator = physicalObjects.iterator(); iterator.hasNext(); ) {
+        physicalObjects.forEach(s -> {
+            s.update();
+            s.display();
+            checkBallBounds(s, curve);
+            //System.out.println("energia totale: " + (s.getVelocity().y*s.getVelocity().y + simulationPane.getHeight() - s.getLocation().y));
+        });
     }
 
     private void checkBallBounds(BouncingSprite s, AnalyticalCurve curve) {
@@ -144,14 +163,33 @@ public class SimulatorWindowController {
 
     }
 
+    void stopSimulation() {
+        simulationButton.setText("Stop");
+        timer.stop();
+    }
+
+    void resumeSimulation() {
+        simulationButton.setText("Simulate");
+        timer.start();
+    }
+
+    void restartSimulation() {
+        physicalObjects.forEach(sprite -> {
+            sprite.getLocation().set(new PVector(curveCanvas.getWidth()/2 + 100, 150));
+            sprite.getVelocity().set(new PVector(0, 0));
+        });
+        simulationButton.setText("Simulate");
+        timer.start();
+    }
+
     @FXML
     void onSimulate() {
         this.isSimulating = !this.isSimulating;
 
         if(this.isSimulating) {
-            simulationButton.setText("Stop");
+            stopSimulation();
         } else {
-            simulationButton.setText("Simulate");
+            resumeSimulation();
         }
     }
 

@@ -1,39 +1,35 @@
 package com.example.chaossimulator.curves;
 
-import javafx.scene.canvas.GraphicsContext;
 import com.example.chaossimulator.objects.PVector;
-
+import javafx.scene.canvas.GraphicsContext;
 
 /*
+TO DO
 
-TO DO:
-
-cancellare i setter, praticamente non li uso (anzi non li uso proprio!!)
+- Metti a posto documentazione (soprattutto costruttori)
  */
 
-public class AnalyticalParabola implements AnalyticalCurve {
+public class AnalyticalSine implements AnalyticalCurve{
 
-    // y = ax^2 + bx + c
-
+    // y = a sin(bx + xDrag) + c
     private double a;
     private double b;
     private double c;
     private double xDrag;
 
-    private PVector vertex;
-
 
 
     /**
-     * Constructs a parabola given its main known coefficients a, b and c and a
+     * Constructs a sine function (y = a sin(bx + xDrag) + c)
+     * given its coefficients a, b, c and xDrag and a
      * GraphicsContext as an absolute frame of reference
-     * @param a coefficient of the squared term
-     * @param b coefficient of the linear term
+     * @param a
+     * @param b
      * @param c drag-y coefficient
      * @param xDrag drag-x coefficient
      * @param gc frame of reference for the parabola
      */
-    public AnalyticalParabola(double a, double b, double c, double xDrag, GraphicsContext gc) {
+    public AnalyticalSine(double a, double b, double c, double xDrag, GraphicsContext gc) {
 
         // Remember that the y simulation axe is inverted
 
@@ -43,32 +39,23 @@ public class AnalyticalParabola implements AnalyticalCurve {
         this.c = gc.getCanvas().getHeight() - c;
         this.xDrag = xDrag;
 
-        // Define the vertex
-        vertex = new PVector();
-        this.vertex.x = ( (-b) / (2*a) )  +  ( this.xDrag );
-        this.vertex.y = computeY(this.vertex.x);
     }
 
 
 
-
     /**
-     * Constructs a standard parabola given a GraphicsContext as an absolute
-     * frame of reference
+     * Constructs a standard sine function given a GraphicsContext
+     * as an absolute frame of reference
      * @param gc frame of reference for the parabola
      */
-    public AnalyticalParabola(GraphicsContext gc) {
+    public AnalyticalSine(GraphicsContext gc) {
 
         // Define the properties
-        this.a = -1.0/300; // DEFAULT: -1.0/300
-        this.b = 0;
-        this.c = gc.getCanvas().getHeight() - 30;
+        this.a = -250;
+        this.b = 1.0/200;
+        this.c = gc.getCanvas().getHeight() - 300;
         this.xDrag = -gc.getCanvas().getWidth()/2;
 
-        // Define the vertex
-        vertex = new PVector();
-        this.vertex.x = 500;
-        this.vertex.y = computeY(this.vertex.x);
     }
 
 
@@ -104,10 +91,6 @@ public class AnalyticalParabola implements AnalyticalCurve {
         this.xDrag = xDrag;
     }
 
-    public PVector getVertex() {
-        return vertex;
-    }
-
     @Override
     public boolean containsPoint(double x, double y) {
         return computeY(x) == y;
@@ -115,7 +98,7 @@ public class AnalyticalParabola implements AnalyticalCurve {
 
     @Override
     public double computeY(double x) {
-        return a*Math.pow(x + xDrag, 2)  +  b*(x + xDrag)  +  c;
+        return a*Math.sin(b*x + xDrag)  +  c;
     }
 
     /*
@@ -130,10 +113,8 @@ public class AnalyticalParabola implements AnalyticalCurve {
 
     @Override
     public boolean chooseXCoordinate(double x) {
-        System.out.println(vertex); return x > vertex.x;
+        return true;
     }
 
-
      */
-
 }

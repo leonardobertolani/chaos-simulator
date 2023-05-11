@@ -1,19 +1,11 @@
 package com.example.chaossimulator.curves;
 
-import javafx.scene.canvas.GraphicsContext;
 import com.example.chaossimulator.objects.PVector;
+import javafx.scene.canvas.GraphicsContext;
 
+public class AnalyticalHyperbolicCosine implements AnalyticalCurve {
 
-/*
-
-TO DO:
-
-cancellare i setter, praticamente non li uso (anzi non li uso proprio!!)
- */
-
-public class AnalyticalParabola implements AnalyticalCurve {
-
-    // y = ax^2 + bx + c
+    // y = ( b * ( e^a(x + xDrag)  +  e^-a(x + xDrag) )  /  2 ) + c
 
     private double a;
     private double b;
@@ -25,15 +17,16 @@ public class AnalyticalParabola implements AnalyticalCurve {
 
 
     /**
-     * Constructs a parabola given its main known coefficients a, b and c and a
+     * Constructs a hyperbolic cosine y = ( b * ( e^a(x + xDrag)  +  e^-a(x + xDrag) )  /  2 ) + c
+     * given its coefficients a, b, c and xDrag and a
      * GraphicsContext as an absolute frame of reference
-     * @param a coefficient of the squared term
-     * @param b coefficient of the linear term
+     * @param a coefficient of the x coordinate
+     * @param b coefficient of the y coordinate
      * @param c drag-y coefficient
      * @param xDrag drag-x coefficient
-     * @param gc frame of reference for the parabola
+     * @param gc frame of reference for the hyperbolic cosine
      */
-    public AnalyticalParabola(double a, double b, double c, double xDrag, GraphicsContext gc) {
+    public AnalyticalHyperbolicCosine(double a, double b, double c, double xDrag, GraphicsContext gc) {
 
         // Remember that the y simulation axe is inverted
 
@@ -53,16 +46,16 @@ public class AnalyticalParabola implements AnalyticalCurve {
 
 
     /**
-     * Constructs a standard parabola given a GraphicsContext as an absolute
-     * frame of reference
+     * Constructs a standard hyperbolic cosine given a GraphicsContext
+     * as an absolute frame of reference
      * @param gc frame of reference for the parabola
      */
-    public AnalyticalParabola(GraphicsContext gc) {
+    public AnalyticalHyperbolicCosine(GraphicsContext gc) {
 
         // Define the properties
-        this.a = -1.0/300; // DEFAULT: -1.0/300
-        this.b = 0;
-        this.c = gc.getCanvas().getHeight() - 30;
+        this.a = 1.0/270;
+        this.b = -200;
+        this.c = gc.getCanvas().getHeight() + 100;
         this.xDrag = -gc.getCanvas().getWidth()/2;
 
         // Define the vertex
@@ -115,25 +108,6 @@ public class AnalyticalParabola implements AnalyticalCurve {
 
     @Override
     public double computeY(double x) {
-        return a*Math.pow(x + xDrag, 2)  +  b*(x + xDrag)  +  c;
+        return ( b * ( Math.exp(a*(x + xDrag))  +  Math.exp(-a*(x + xDrag)) )  /  2 )  +  c;
     }
-
-    /*
-    @Override
-    public double computeX(double y, boolean mode) {
-        if(mode) {
-            return ( -b - Math.sqrt(Math.pow(b, 2) - 4*a*(c - y)) ) / ( 2*a )  -  xDrag;
-        }
-
-        return ( -b + Math.sqrt(Math.pow(b, 2) - 4*a*(c - y)) ) / ( 2*a )  -  xDrag;
-    }
-
-    @Override
-    public boolean chooseXCoordinate(double x) {
-        System.out.println(vertex); return x > vertex.x;
-    }
-
-
-     */
-
 }
