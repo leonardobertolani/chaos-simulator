@@ -6,6 +6,7 @@ public class BallsSettings {
     public static double SPRITE_MAX_SPEED = 100;
     public static double SPRITE_DEFAULT_MASS = 10;
     public static PVector FORCE_WIND = new PVector(0.0, 0.0);
-    public static PVector FORCE_GRAVITY = new PVector(0.0, 5.0);
+    public static PVector FORCE_GRAVITY = new PVector(0.0, 5);
+    public static PVector ACCELERATION = new PVector(0.0, 0.3);
     public static double SPRITE_RADIUS = 5;
 }

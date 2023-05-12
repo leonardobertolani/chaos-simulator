@@ -1,19 +1,23 @@
 package com.example.chaossimulator;
 
-import com.example.chaossimulator.objects.BallsSettings;
+
 import com.example.chaossimulator.objects.BouncingSprite;
 import com.example.chaossimulator.objects.PVector;
-import com.example.chaossimulator.objects.Sprite;
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+
+/*
+TO DO
+
+- Metti a posto colorPicker che se non selezioni niente deve comunque prenderti il bianco
+ */
 
 public class AddObjectController {
 
-    @FXML
-    private ColorPicker objectColorPicker;
+    @FXML private ColorPicker objectColorPicker;
 
     @FXML private TextField xPositionField;
 
@@ -24,22 +28,33 @@ public class AddObjectController {
     @FXML private TextField yVelocityField;
 
     BouncingSprite sprite;
+    double xLocation;
+    double yLocation;
+    double xVelocity;
+    double yVelocity;
+    Color color;
 
-    public void initialize() {
+    public void initialize(Canvas canvas) {
         //objectColorPicker.promptTextProperty().addListener(((observable, oldValue, newValue) -> sprite.setView(new Circle())));
-        xPositionField.textProperty().addListener((observable, oldValue, newValue) -> sprite.setXLocation(Double.parseDouble(newValue)));
-        yPositionField.textProperty().addListener(((observable, oldValue, newValue) -> sprite.setYLocation(Double.parseDouble(newValue))));
+        xPositionField.textProperty().addListener((observable, oldValue, newValue) -> xLocation = Double.parseDouble(newValue));
+        xPositionField.setText("0");
 
-        xVelocityField.textProperty().addListener(((observable, oldValue, newValue) -> sprite.setXVelocity(Double.parseDouble(newValue))));
-        yVelocityField.textProperty().addListener(((observable, oldValue, newValue) -> sprite.setYVelocity(Double.parseDouble(newValue))));
+        yPositionField.textProperty().addListener(((observable, oldValue, newValue) -> yLocation = canvas.getHeight() - Double.parseDouble(newValue)));
+        yPositionField.setText("0");
+
+
+        xVelocityField.textProperty().addListener(((observable, oldValue, newValue) -> xVelocity = Double.parseDouble(newValue)));
+        xVelocityField.setText("0");
+
+        yVelocityField.textProperty().addListener(((observable, oldValue, newValue) -> yVelocity = -Double.parseDouble(newValue)));
+        yVelocityField.setText("0");
+
+        objectColorPicker.setOnAction(event -> color = objectColorPicker.getValue());
+        //objectColorPicker.promptTextProperty().addListener(((observable, oldValue, newValue) -> color = Color.valueOf(newValue)));
+        objectColorPicker.setValue(Color.WHITE);
 
     }
 
-    public BouncingSprite getNewObject() {  return sprite; }
+    public BouncingSprite getNewObject() {  return new BouncingSprite(color, new PVector(xLocation, yLocation), new PVector(xVelocity, yVelocity)); }
 
-    public void setPhysicalObject() {
-        sprite = new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.GREEN), new PVector(2 / 4, 2 / 2), new PVector(4, 0), new PVector(0, 0.1));
-
-
-    }
 }

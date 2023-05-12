@@ -7,6 +7,10 @@ import javafx.scene.canvas.GraphicsContext;
 TO DO
 
 - Metti a posto documentazione (soprattutto costruttori)
+
+
+#041b1e
+#031517
  */
 
 public class AnalyticalSine implements AnalyticalCurve{
@@ -54,7 +58,7 @@ public class AnalyticalSine implements AnalyticalCurve{
         this.a = -250;
         this.b = 1.0/200;
         this.c = gc.getCanvas().getHeight() - 300;
-        this.xDrag = -gc.getCanvas().getWidth()/2;
+        this.xDrag = -gc.getCanvas().getWidth()/2 + 100;
 
     }
 

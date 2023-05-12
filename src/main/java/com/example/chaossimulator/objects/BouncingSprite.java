@@ -2,7 +2,12 @@ package com.example.chaossimulator.objects;
 
 import com.example.chaossimulator.curves.AnalyticalCurve;
 import javafx.scene.Node;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+
+import java.util.List;
 
 /*
 
@@ -39,17 +44,23 @@ public class BouncingSprite extends Sprite {
         super(view, location, velocity, acceleration, mass);
     }
 
-    public boolean isBouncing(AnalyticalCurve curve, AnchorPane pane) {
+    public BouncingSprite() {
+        super(new Circle(BallsSettings.SPRITE_RADIUS, Color.WHITE),
+                new PVector(0, 0),
+                new PVector(0, 0),
+                BallsSettings.ACCELERATION);
+    }
 
-        if (location.y + velocity.y + BallsSettings.SPRITE_RADIUS > curve.computeY(location.x + velocity.x)) {
-            // is bouncing
+    public BouncingSprite(Color color, PVector location, PVector velocity) {
+        super(new Circle(BallsSettings.SPRITE_RADIUS, color),
+                location,
+                velocity,
+                BallsSettings.ACCELERATION);
+    }
 
-            // now I adjust the position of the ball so that it shows really close to the curve
-            //adjustCollision(curve);
-            return true;
-        }
+    public boolean isBouncing(AnalyticalCurve curve) {
 
-        return false;
+        return location.y + velocity.y + BallsSettings.SPRITE_RADIUS > curve.computeY(location.x + velocity.x);
     }
 
 
@@ -121,6 +132,13 @@ public class BouncingSprite extends Sprite {
         velocity.y *= -1;
         velocity = velocity.add(PVector.multiply(acceleration, -1));
 
+    }
+
+
+    public static void generateDefaultPhysicalObject(AnchorPane pane, List<BouncingSprite> objects, BouncingSprite sprite) {
+        objects.add(sprite);
+        pane.getChildren().add(sprite);
+        sprite.display();
     }
 
 

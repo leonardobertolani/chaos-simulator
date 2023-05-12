@@ -20,8 +20,8 @@ public class SimulatorWindow extends Application {
         stage.setTitle("Chaos Simulator!");
         stage.setScene(scene);
         stage.show();
-        controller.initializeSimulation();
-        controller.initializeTimer();
+        //controller.initializeSimulation();
+        controller.onStart();
     }
 
     public static void main(String[] args) {

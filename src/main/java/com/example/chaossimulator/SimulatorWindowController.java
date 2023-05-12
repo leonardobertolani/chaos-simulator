@@ -17,7 +17,6 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,14 +26,23 @@ import java.util.Optional;
 
 TO DO
 
-- quando apri la finestra per creare una nuova pallina, ferma tutto e ricomincia al premere di ok o annulla
+- nella finestra di generazione di una pallina aggiungi il tasto annulla e apply
+- scrivi la funzione per la generazione sfasata e usala anche per add series
  */
 
 public class SimulatorWindowController {
     @FXML private AnchorPane simulationPane;
     @FXML private Canvas curveCanvas;
     @FXML private ChoiceBox<String> chCurve;
+    @FXML private Button simulationButton;
 
+
+
+
+    List<BouncingSprite> physicalObjects;
+    AnimationTimer timer;
+    boolean isSimulating;
+    AnalyticalCurve curve;
     public static final String[] curveTypes = {
             "com.example.chaossimulator.curves.AnalyticalParabola",
             "com.example.chaossimulator.curves.AnalyticalHyperbole",
@@ -43,26 +51,50 @@ public class SimulatorWindowController {
             "com.example.chaossimulator.curves.AnalyticalHyperbolicCosine",
             "com.example.chaossimulator.curves.AnalyticalCircumference"
     };
-    @FXML private Button simulationButton;
-
+    public static final Color[] OBJECT_COLORS = { Color.RED, Color.ORANGE, Color.YELLOW, Color.YELLOWGREEN, Color.GREEN, Color.CYAN, Color.BLUE, Color.BLUEVIOLET, Color.PURPLE, Color.BROWN };
 
 
     /**
-     * A List of BouncingSprite objects used in the simulation
+     * First method of the simulation program. It is used to
+     * set up all the objects.
      */
-    List<BouncingSprite> physicalObjects;
-    AnimationTimer timer;
-    boolean isSimulating;
-    AnalyticalCurve curve;
+    void onStart() {
+        this.isSimulating = false;
+        simulationButton.setText("Simulate");
 
+        initializeTimer();
+        initializeSimulation();
+    }
+
+
+    /**
+     * Method for create a new timer and linking it
+     * to the mainLoop() function.
+     */
+    void initializeTimer() {
+
+        timer = new AnimationTimer() {
+
+            @Override
+            public void handle(long now) {
+
+                mainLoop();
+            }
+        };
+    }
+
+    /**
+     * Method specifically written to set up all the stuff
+     * regarding the simulation. It's been called in the onStart() method.
+     */
     @FXML
     public void initializeSimulation() {
 
-        // Initialization
         double h = simulationPane.getHeight();
         double w = simulationPane.getWidth();
-        isSimulating = false;
+
         physicalObjects = new ArrayList<>();
+
         GraphicsContext gc = curveCanvas.getGraphicsContext2D();
         gc.setStroke(Color.WHITE);
 
@@ -80,13 +112,12 @@ public class SimulatorWindowController {
 
          */
 
-        Color COLORS[] = {Color.RED, Color.ORANGE, Color.YELLOW, Color.YELLOWGREEN, Color.GREEN, Color.CYAN, Color.BLUE, Color.BLUEVIOLET, Color.PURPLE, Color.BROWN};
         for(double n = 1; n <= BallsSettings.SPRITE_COUNT; ++n) {
             physicalObjects.add(new BouncingSprite(
-                    new Circle(BallsSettings.SPRITE_RADIUS, COLORS[(int)((n-1)/(BallsSettings.SPRITE_COUNT/10.0))]),
+                    new Circle(BallsSettings.SPRITE_RADIUS, OBJECT_COLORS[(int)((n-1)/(BallsSettings.SPRITE_COUNT/10.0))]),
                     new PVector(700 + n/1000, 200),
                     new PVector(0, 0),
-                    new PVector(0, 0.5)));
+                    new PVector(0, 0.3)));
         }
 
         simulationPane.getChildren().addAll(physicalObjects);
@@ -102,7 +133,7 @@ public class SimulatorWindowController {
                 e.printStackTrace();
             }
 
-            //restartSimulation();
+            restartSimulation();
             gc.clearRect(0, 0, curveCanvas.getWidth(), curveCanvas.getHeight()); // Clearing the canvas
             AnalyticalCurve.drawCurve(curve, gc); // Drawing the new curve
         });
@@ -110,28 +141,19 @@ public class SimulatorWindowController {
 
     }
 
-    void initializeTimer() {
-
-        timer = new AnimationTimer() {
-
-            @Override
-            public void handle(long now) {
-
-                mainLoop();
-            }
-        };
-        timer.start();
-    }
 
     private void mainLoop() {
         // Do simulation stuff
         //for(Iterator<BouncingSprite> iterator = physicalObjects.iterator(); iterator.hasNext(); ) {
+
         physicalObjects.forEach(s -> {
             s.update();
             s.display();
             checkBallBounds(s, curve);
             //System.out.println("energia totale: " + (s.getVelocity().y*s.getVelocity().y + simulationPane.getHeight() - s.getLocation().y));
         });
+
+
     }
 
     private void checkBallBounds(BouncingSprite s, AnalyticalCurve curve) {
@@ -157,40 +179,44 @@ public class SimulatorWindowController {
             s.getVelocity().x *= -1;
         }
         // analytical curve collision
-        if(s.isBouncing(curve, simulationPane)) {
+        if(s.isBouncing(curve)) {
             s.applyBounce(curve);
         }
 
     }
 
     void stopSimulation() {
-        simulationButton.setText("Stop");
+        this.isSimulating = false;
+        simulationButton.setText("Simulate");
         timer.stop();
     }
 
     void resumeSimulation() {
-        simulationButton.setText("Simulate");
-        timer.start();
-    }
-
-    void restartSimulation() {
-        physicalObjects.forEach(sprite -> {
-            sprite.getLocation().set(new PVector(curveCanvas.getWidth()/2 + 100, 150));
-            sprite.getVelocity().set(new PVector(0, 0));
-        });
-        simulationButton.setText("Simulate");
+        this.isSimulating = true;
+        simulationButton.setText("Stop");
         timer.start();
     }
 
     @FXML
-    void onSimulate() {
-        this.isSimulating = !this.isSimulating;
+    void restartSimulation() {
+        stopSimulation();
+        physicalObjects.forEach(sprite -> {
+            sprite.getLocation().set(new PVector(curveCanvas.getWidth()/2 + 100, 150));
+            sprite.getVelocity().set(new PVector(0, 0));
+            sprite.display();
+        });
 
-        if(this.isSimulating) {
+    }
+
+    @FXML
+    void onSimulate() {
+
+        if (this.isSimulating) {
             stopSimulation();
         } else {
             resumeSimulation();
         }
+
     }
 
 
@@ -198,13 +224,14 @@ public class SimulatorWindowController {
     public void onAddNewObject() {
 
         try {
+            stopSimulation();
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("add-object-view.fxml"));
             DialogPane view = loader.load();
             AddObjectController controller = loader.getController();
 
             // Set an empty person into the controller
-            controller.setPhysicalObject();
+            controller.initialize(curveCanvas);
 
             // Create the dialog
             Dialog<ButtonType> dialog = new Dialog<>();
@@ -217,8 +244,7 @@ public class SimulatorWindowController {
 
             // Add new object to the Lists
             if (clickedButton.orElse(ButtonType.CANCEL) == ButtonType.OK) {
-                physicalObjects.add(controller.getNewObject());
-                simulationPane.getChildren().add(controller.getNewObject());
+                BouncingSprite.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject());
             }
         } catch (IOException e) {
             e.printStackTrace();
