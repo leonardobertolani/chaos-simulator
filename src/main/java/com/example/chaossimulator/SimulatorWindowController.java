@@ -1,10 +1,7 @@
 package com.example.chaossimulator;
 
 import com.example.chaossimulator.curves.*;
-import com.example.chaossimulator.objects.BallsSettings;
-import com.example.chaossimulator.objects.BouncingSprite;
-import com.example.chaossimulator.objects.PVector;
-import com.example.chaossimulator.objects.Sprite;
+import com.example.chaossimulator.objects.*;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -110,7 +107,7 @@ public class SimulatorWindowController {
         physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.GREEN), new PVector(w + 0.025, 0), new PVector(0, 0), new PVector(0, 0.1)));
 
 
-         */
+
 
         for(double n = 1; n <= BallsSettings.SPRITE_COUNT; ++n) {
             physicalObjects.add(new BouncingSprite(
@@ -119,6 +116,8 @@ public class SimulatorWindowController {
                     new PVector(0, 0),
                     new PVector(0, 0.3)));
         }
+
+         */
 
         simulationPane.getChildren().addAll(physicalObjects);
         physicalObjects.forEach(Sprite::display);
@@ -230,7 +229,7 @@ public class SimulatorWindowController {
             DialogPane view = loader.load();
             AddObjectController controller = loader.getController();
 
-            // Set an empty person into the controller
+            // Initialize the object inside the dialog pane
             controller.initialize(curveCanvas);
 
             // Create the dialog
@@ -239,13 +238,81 @@ public class SimulatorWindowController {
             dialog.initModality(Modality.WINDOW_MODAL);
             dialog.setDialogPane(view);
 
+            /*
+            Button applyButton = (Button) view.lookup("applyButton");
+            applyButton.setOnAction(event -> {
+                // Logica da eseguire quando viene premuto il pulsante "Applica"
+                // Esempio: Modifica dei dati nella finestra principale
+                BouncingSprite.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject());
+
+                // Chiudi la finestra di dialogo se necessario
+                // ((Dialog) applyButton.getScene().getWindow()).close();
+            });
+
+             */
+
             // Show the dialog and wait until the user closes it
             Optional<ButtonType> clickedButton = dialog.showAndWait();
 
             // Add new object to the Lists
             if (clickedButton.orElse(ButtonType.CANCEL) == ButtonType.OK) {
-                BouncingSprite.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject());
+                //if(controller.getNewObject().isPresent()) {
+                //BouncingSprite.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject().get());
+                SimulationUtils.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject());
+                //}
+
             }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    public void onAddNewSeries() {
+
+        try {
+            stopSimulation();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("add-series-view.fxml"));
+            DialogPane view = loader.load();
+            AddSeriesController controller = loader.getController();
+
+            // Initialize the object inside the dialog pane
+            controller.initialize(curveCanvas);
+
+            // Create the dialog
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("New Object");
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.setDialogPane(view);
+
+            /*
+            Button applyButton = (Button) view.lookup("applyButton");
+            applyButton.setOnAction(event -> {
+                // Logica da eseguire quando viene premuto il pulsante "Applica"
+                // Esempio: Modifica dei dati nella finestra principale
+                BouncingSprite.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject());
+
+                // Chiudi la finestra di dialogo se necessario
+                // ((Dialog) applyButton.getScene().getWindow()).close();
+            });
+
+             */
+
+            // Show the dialog and wait until the user closes it
+            Optional<ButtonType> clickedButton = dialog.showAndWait();
+
+            // Add new object to the Lists
+            if (clickedButton.orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                //if(controller.getNewObject().isPresent()) {
+                //BouncingSprite.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject().get());
+                SimulationUtils.generateDefaultPhysicalObjectSeries(simulationPane, physicalObjects, controller.getNewSeries());
+                //}
+
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

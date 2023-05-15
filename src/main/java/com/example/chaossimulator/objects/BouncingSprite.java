@@ -135,11 +135,5 @@ public class BouncingSprite extends Sprite {
     }
 
 
-    public static void generateDefaultPhysicalObject(AnchorPane pane, List<BouncingSprite> objects, BouncingSprite sprite) {
-        objects.add(sprite);
-        pane.getChildren().add(sprite);
-        sprite.display();
-    }
-
 
 }

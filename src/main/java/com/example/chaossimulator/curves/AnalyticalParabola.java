@@ -60,7 +60,7 @@ public class AnalyticalParabola implements AnalyticalCurve {
     public AnalyticalParabola(GraphicsContext gc) {
 
         // Define the properties
-        this.a = -1.0/300; // DEFAULT: -1.0/300
+        this.a = -1.0/500; // DEFAULT: -1.0/300
         this.b = 0;
         this.c = gc.getCanvas().getHeight() - 30;
         this.xDrag = -gc.getCanvas().getWidth()/2;

@@ -34,7 +34,7 @@
                <children>
                   <Button fx:id="simulationButton" mnemonicParsing="false" onAction="#onSimulate" prefHeight="30.0" prefWidth="150.0" text="Simulate" GridPane.columnIndex="4" />
                   <Button mnemonicParsing="false" onAction="#onAddNewObject" prefHeight="30.0" prefWidth="150.0" text="Add object" GridPane.columnIndex="1" />
-                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Add series" GridPane.columnIndex="2" />
+                  <Button mnemonicParsing="false" onAction="#onAddNewSeries" prefHeight="30.0" prefWidth="150.0" text="Add series" GridPane.columnIndex="2" />
                   <Button mnemonicParsing="false" onAction="#restartSimulation" prefHeight="30.0" prefWidth="150.0" text="Reset" GridPane.columnIndex="3" />
                   <ChoiceBox fx:id="chCurve" prefHeight="30.0" prefWidth="250.0" />
                </children>
