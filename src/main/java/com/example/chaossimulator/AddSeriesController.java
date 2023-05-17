@@ -30,10 +30,10 @@ public class AddSeriesController {
     public void initialize(Canvas canvas) {
 
         xPositionField.textProperty().addListener(((observable, oldValue, newValue) -> xLocation = Double.parseDouble(xPositionField.getText())));
-        xPositionField.setText("600");
+        xPositionField.setText("400");
 
         yPositionField.textProperty().addListener(((observable, oldValue, newValue) -> yLocation = canvas.getHeight() - Double.parseDouble(yPositionField.getText())));
-        yPositionField.setText("500");
+        yPositionField.setText("400");
 
         xVelocityField.textProperty().addListener((observable, oldValue, newValue) -> xVelocity = Double.parseDouble(xVelocityField.getText()));
         xVelocityField.setText("0");

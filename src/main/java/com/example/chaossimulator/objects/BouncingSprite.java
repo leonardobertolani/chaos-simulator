@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
 import java.util.List;
@@ -24,37 +25,21 @@ public class BouncingSprite extends Sprite {
      */
     final double dX_INCREMENT = 0.05;
 
-    public BouncingSprite(Node view) {
-        super(view);
-    }
-
-    public BouncingSprite(Node view, PVector location) {
-        super(view, location);
-    }
-
     public BouncingSprite(Node view, PVector location, PVector velocity) {
         super(view, location, velocity);
-    }
-
-    public BouncingSprite(Node view, PVector location, PVector velocity, PVector acceleration) {
-        super(view, location, velocity, acceleration);
-    }
-
-    public BouncingSprite(Node view, PVector location, PVector velocity, PVector acceleration, double mass) {
-        super(view, location, velocity, acceleration, mass);
-    }
-
-    public BouncingSprite() {
-        super(new Circle(BallsSettings.SPRITE_RADIUS, Color.WHITE),
-                new PVector(0, 0),
-                new PVector(0, 0),
-                BallsSettings.ACCELERATION);
     }
 
     public BouncingSprite(Color color, PVector location, PVector velocity) {
         super(new Circle(BallsSettings.SPRITE_RADIUS, color),
                 location,
                 velocity,
+                BallsSettings.ACCELERATION);
+    }
+
+    public BouncingSprite(BouncingSprite bs) {
+        super(  bs.getView(),
+                new PVector(bs.location.x, bs.location.y),
+                new PVector(bs.velocity.x, bs.velocity.y),
                 BallsSettings.ACCELERATION);
     }
 

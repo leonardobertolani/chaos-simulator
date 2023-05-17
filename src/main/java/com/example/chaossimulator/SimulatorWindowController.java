@@ -15,6 +15,7 @@ import javafx.stage.Modality;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,7 @@ public class SimulatorWindowController {
 
 
     List<BouncingSprite> physicalObjects;
+    List<BouncingSprite> initialObjectConfiguration;
     AnimationTimer timer;
     boolean isSimulating;
     AnalyticalCurve curve;
@@ -91,36 +93,10 @@ public class SimulatorWindowController {
         double w = simulationPane.getWidth();
 
         physicalObjects = new ArrayList<>();
+        initialObjectConfiguration = new ArrayList<>();
 
         GraphicsContext gc = curveCanvas.getGraphicsContext2D();
         gc.setStroke(Color.WHITE);
-
-
-        //physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.WHITE), new PVector(300, 50), new PVector(0, 2), new PVector(0, 0.1)));
-
-        /*
-        physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.BLUE), new PVector(w, 0), new PVector(0, 0), new PVector(0, 0.1)));
-        physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), new PVector(w + 0.005, 0), new PVector(0, 0), new PVector(0, 0.1)));
-        physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), new PVector(w + 0.01, 0), new PVector(0, 0), new PVector(0, 0.1)));
-        physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.RED), new PVector(w + 0.015, 0), new PVector(0, 0), new PVector(0, 0.1)));
-        physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.YELLOW), new PVector(w + 0.02, 0), new PVector(0, 0), new PVector(0, 0.1)));
-        physicalObjects.add(new BouncingSprite(new Circle(BallsSettings.SPRITE_RADIUS, Color.GREEN), new PVector(w + 0.025, 0), new PVector(0, 0), new PVector(0, 0.1)));
-
-
-
-
-        for(double n = 1; n <= BallsSettings.SPRITE_COUNT; ++n) {
-            physicalObjects.add(new BouncingSprite(
-                    new Circle(BallsSettings.SPRITE_RADIUS, OBJECT_COLORS[(int)((n-1)/(BallsSettings.SPRITE_COUNT/10.0))]),
-                    new PVector(700 + n/1000, 200),
-                    new PVector(0, 0),
-                    new PVector(0, 0.3)));
-        }
-
-         */
-
-        simulationPane.getChildren().addAll(physicalObjects);
-        physicalObjects.forEach(Sprite::display);
 
 
         chCurve.getItems().addAll(curveTypes);
@@ -132,9 +108,10 @@ public class SimulatorWindowController {
                 e.printStackTrace();
             }
 
-            restartSimulation();
+
             gc.clearRect(0, 0, curveCanvas.getWidth(), curveCanvas.getHeight()); // Clearing the canvas
             AnalyticalCurve.drawCurve(curve, gc); // Drawing the new curve
+            restartSimulation();
         });
         chCurve.getSelectionModel().select(0);
 
@@ -151,7 +128,6 @@ public class SimulatorWindowController {
             checkBallBounds(s, curve);
             //System.out.println("energia totale: " + (s.getVelocity().y*s.getVelocity().y + simulationPane.getHeight() - s.getLocation().y));
         });
-
 
     }
 
@@ -198,12 +174,20 @@ public class SimulatorWindowController {
 
     @FXML
     void restartSimulation() {
+
         stopSimulation();
-        physicalObjects.forEach(sprite -> {
-            sprite.getLocation().set(new PVector(curveCanvas.getWidth()/2 + 100, 150));
-            sprite.getVelocity().set(new PVector(0, 0));
-            sprite.display();
-        });
+        restoreObjects();
+
+        /*
+        physicalObjects.clear();
+        for (BouncingSprite bouncingSprite : initialObjectConfiguration) {
+            physicalObjects.add(new BouncingSprite(bouncingSprite));
+
+        }
+
+         */
+
+
 
     }
 
@@ -258,7 +242,8 @@ public class SimulatorWindowController {
             if (clickedButton.orElse(ButtonType.CANCEL) == ButtonType.OK) {
                 //if(controller.getNewObject().isPresent()) {
                 //BouncingSprite.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject().get());
-                SimulationUtils.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject());
+                generateDefaultPhysicalObject(controller.getNewObject());
+                initialObjectConfiguration.add(controller.getNewObject());
                 //}
 
             }
@@ -308,7 +293,10 @@ public class SimulatorWindowController {
             if (clickedButton.orElse(ButtonType.CANCEL) == ButtonType.OK) {
                 //if(controller.getNewObject().isPresent()) {
                 //BouncingSprite.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject().get());
-                SimulationUtils.generateDefaultPhysicalObjectSeries(simulationPane, physicalObjects, controller.getNewSeries());
+                //generateDefaultPhysicalObjectSeries(simulationPane, physicalObjects, initialObjectConfiguration, controller.getNewSeries());
+                controller.getNewSeries().forEach(this::generateDefaultPhysicalObject);
+                initialObjectConfiguration.addAll(controller.getNewSeries());
+                //initialObjectConfiguration.forEach(s -> System.out.println(s));
                 //}
 
             }
@@ -316,6 +304,45 @@ public class SimulatorWindowController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public void generateDefaultPhysicalObject(BouncingSprite sprite) {
+        physicalObjects.add(sprite);
+        simulationPane.getChildren().add(sprite);
+        sprite.display();
+    }
+
+    public void restoreObjects() {
+        /*
+        physicalObjects.clear();
+        simulationPane.getChildren().clear();
+
+        physicalObjects.addAll(initialObjectConfiguration);
+        simulationPane.getChildren().addAll(initialObjectConfiguration);
+
+        physicalObjects.forEach(Sprite::display);
+
+         */
+        List<BouncingSprite> newLink = new ArrayList<>();
+        //newLink.add(new BouncingSprite());
+
+        for(BouncingSprite b : initialObjectConfiguration) {
+            newLink.add(new BouncingSprite(b));
+        }
+
+        //System.out.println("newLink: " + newLink.get(0).hashCode());
+
+        physicalObjects.clear();
+        simulationPane.getChildren().clear();
+        simulationPane.getChildren().add(curveCanvas);
+
+        physicalObjects.addAll(newLink);
+        simulationPane.getChildren().addAll(newLink);
+
+        //System.out.println("physicalObjects: " + physicalObjects.get(0).hashCode());
+        //System.out.println("simulationPane: " + simulationPane.getChildren().get(1).hashCode());
+        physicalObjects.forEach(s -> s.display());
     }
 
 }

@@ -57,35 +57,14 @@ public class Sprite extends Region {
         return location;
     }
 
-    public void setLocation(PVector location) {
-        this.location = location;
-    }
-    public void setXLocation(double x) { this.location.x = x; }
-    public void setYLocation(double y) { this.location.y = y; }
-    public void setZLocation(double z) { this.location.z = z; }
-
 
     public PVector getVelocity() {
         return velocity;
     }
 
-    public void setVelocity(PVector velocity) {
-        this.velocity = velocity;
-    }
-    public void setXVelocity(double x) { this.velocity.x = x; }
-    public void setYVelocity(double y) { this.velocity.y = y; }
-    public void setZVelocity(double z) { this.velocity.z = z; }
-
     public PVector getAcceleration() {
         return acceleration;
     }
-
-    public void setAcceleration(PVector acceleration) {
-        this.acceleration = acceleration;
-    }
-    public void setXAcceleration(double x) { this.acceleration.x = x; }
-    public void setYAcceleration(double y) { this.acceleration.y = y; }
-    public void setZAcceleration(double z) { this.acceleration.z = z; }
 
     public double getMass() {
         return mass;

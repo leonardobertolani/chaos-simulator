@@ -22,13 +22,7 @@ public class SimulationUtils {
         colors.add(Color.color(        0,       255,         0));
     }
 
-    public static void generateDefaultPhysicalObject(AnchorPane pane, List<BouncingSprite> objects, BouncingSprite sprite) {
-        objects.add(sprite);
-        pane.getChildren().add(sprite);
-        sprite.display();
-    }
 
-    public static void generateDefaultPhysicalObjectSeries(AnchorPane pane, List<BouncingSprite> objects, List<BouncingSprite> addingObjects) {
-        addingObjects.forEach(obj ->generateDefaultPhysicalObject(pane, objects, obj));
-    }
+
+
 }
