@@ -7,9 +7,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-/*
-Maybe this time it's the good time
- */
+
 
 public class SimulatorWindow extends Application {
     @Override

@@ -2,23 +2,42 @@ package com.example.chaossimulator.curves;
 
 import javafx.scene.canvas.GraphicsContext;
 
+/**
+ * Class extending the AnalyticalCurve interface and
+ * representing an ellipse with equation (x + xDrag)^2 / a^ 2  +  (y - c)^2 / b^2  =  1
+ */
 public class AnalyticalEllipse implements AnalyticalCurve {
 
-    // x^2 / a^ 2  +  y^2 / b^2  =  1
+    // (x + xDrag)^2 / a^ 2  +  (y - c)^2 / b^2  =  1
 
     private double a;
     private double b;
     private double c;
     private double xDrag;
 
+
+    /**
+     * Constructs an ellipse given its coefficients a, b, c and xDrag and a
+     * GraphicsContext as an absolute frame of reference
+     * @param a coefficient of the x coordinate
+     * @param b coefficient of the y coordinate
+     * @param c drag-y coefficient
+     * @param xDrag drag-x coefficient
+     * @param gc frame of reference for the ellipse
+     */
     public AnalyticalEllipse(double a, double b, double c, double xDrag, GraphicsContext gc) {
         this.a = a;
-        this.b = b;
+        this.b = -b;
         this.c = c;
         this.xDrag = xDrag;
     }
 
 
+    /**
+     * Constructs a standard ellipse given a GraphicsContext as
+     * an absolute frame of reference
+     * @param gc frame of reference for the ellipse
+     */
     public AnalyticalEllipse(GraphicsContext gc) {
 
         // Remember that the y simulation axe is inverted
@@ -32,13 +51,5 @@ public class AnalyticalEllipse implements AnalyticalCurve {
     }
 
     @Override
-    public boolean containsPoint(double x, double y) {
-        return computeY(x) == y;
-    }
-
-    @Override
-    public double computeY(double x) {
-        //return Math.sqrt(Math.pow(b / a * (x + xDrag), 2)  +  (b*b));
-        return -b * Math.sqrt(-Math.pow((x + xDrag)/a, 2) + 1)  +  c;
-    }
+    public double computeY(double x) { return -b * Math.sqrt(-Math.pow((x + xDrag)/a, 2) + 1)  +  c; }
 }

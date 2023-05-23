@@ -1,21 +1,9 @@
 package com.example.chaossimulator.objects;
 
 import com.example.chaossimulator.curves.AnalyticalCurve;
-import javafx.scene.Node;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
-import java.util.List;
-
-/*
-
-TO DO
-
-- aggiusta o cancella adjustCollision
- */
 
 public class BouncingSprite extends Sprite {
 
@@ -23,12 +11,17 @@ public class BouncingSprite extends Sprite {
      * Constant used to apply very small increments during the operations
      * on the coordinates.
      */
-    final double dX_INCREMENT = 0.05;
+    final double dX_INCREMENT = 0.0005;
 
-    public BouncingSprite(Node view, PVector location, PVector velocity) {
-        super(view, location, velocity);
-    }
 
+    /**
+     * Constructs a new BouncingSprite object given a color, a location and a velocity.
+     * By default, a BouncingSprite object is a Sprite object with circular shape, fixed radius
+     * and fixed acceleration (managed by BallsSettings class).
+     * @param color the color to be applied to the new BouncingSprite object
+     * @param location the location for the new BouncingSprite object
+     * @param velocity the velocity for the new BouncingSprite object
+     */
     public BouncingSprite(Color color, PVector location, PVector velocity) {
         super(new Circle(BallsSettings.SPRITE_RADIUS, color),
                 location,
@@ -36,6 +29,10 @@ public class BouncingSprite extends Sprite {
                 BallsSettings.ACCELERATION);
     }
 
+    /**
+     * Constructs a new BouncingSprite object from the one given as parameter.
+     * @param bs the BouncingSprite object to copy
+     */
     public BouncingSprite(BouncingSprite bs) {
         super(  bs.getView(),
                 new PVector(bs.location.x, bs.location.y),
@@ -43,42 +40,22 @@ public class BouncingSprite extends Sprite {
                 BallsSettings.ACCELERATION);
     }
 
+    /**
+     * Decides wether the BouncingSprite object is colliding with an AnalyticalCurve object
+     * @param curve the AnalyticalCurve object to check for
+     * @return a boolean value representing the collision (true) or not (false)
+     */
     public boolean isBouncing(AnalyticalCurve curve) {
 
         return location.y + velocity.y + BallsSettings.SPRITE_RADIUS > curve.computeY(location.x + velocity.x);
     }
 
 
-    private void adjustCollision(AnalyticalCurve curve) {
-
-        if (velocity.x != 0) {
-            double xIncrement = Math.signum(velocity.x)* velocity.x / 100;
-            location.y = -(-velocity.y / velocity.x) * (location.x + xIncrement) - (-location.x * (-velocity.y) - location.y * velocity.x) / velocity.x;
-            location.x += xIncrement;
-
-            while (location.y < (curve.computeY(location.x) - BallsSettings.SPRITE_RADIUS)) {
-
-                location.y = -(-velocity.y / velocity.x) * (location.x + xIncrement) - (-location.x * (-velocity.y) - location.y * velocity.x) / velocity.x;
-                location.x += xIncrement;
-            }
-
-
-        } else {
-
-            double yIncrement = Math.signum(velocity.y)*velocity.y / 100;
-            location.y += yIncrement;
-
-            while (location.y < (curve.computeY(location.x) - BallsSettings.SPRITE_RADIUS)) {
-
-                location.y += yIncrement;
-            }
-
-
-        }
-    }
-
-
-
+    /**
+     * Apply the bounce on the object given a AnalyticalCurve object to bounce on.
+     * Often used with the isBouncing() function.
+     * @param curve the AnalyticalCurve object on which to apply the bounce
+     */
     public void applyBounce(AnalyticalCurve curve) {
 
         // First of all, I invert the y coordinate of the velocity just to work with the vectors better

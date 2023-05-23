@@ -15,18 +15,9 @@ import javafx.stage.Modality;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-
-/*
-
-TO DO
-
-- nella finestra di generazione di una pallina aggiungi il tasto annulla e apply
-- scrivi la funzione per la generazione sfasata e usala anche per add series
- */
 
 public class SimulatorWindowController {
     @FXML private AnchorPane simulationPane;
@@ -50,8 +41,6 @@ public class SimulatorWindowController {
             "com.example.chaossimulator.curves.AnalyticalHyperbolicCosine",
             "com.example.chaossimulator.curves.AnalyticalCircumference"
     };
-    public static final Color[] OBJECT_COLORS = { Color.RED, Color.ORANGE, Color.YELLOW, Color.YELLOWGREEN, Color.GREEN, Color.CYAN, Color.BLUE, Color.BLUEVIOLET, Color.PURPLE, Color.BROWN };
-
 
     /**
      * First method of the simulation program. It is used to
@@ -119,14 +108,12 @@ public class SimulatorWindowController {
 
 
     private void mainLoop() {
-        // Do simulation stuff
-        //for(Iterator<BouncingSprite> iterator = physicalObjects.iterator(); iterator.hasNext(); ) {
 
+        // Do simulation stuff
         physicalObjects.forEach(s -> {
             s.update();
             s.display();
             checkBallBounds(s, curve);
-            //System.out.println("energia totale: " + (s.getVelocity().y*s.getVelocity().y + simulationPane.getHeight() - s.getLocation().y));
         });
 
     }
@@ -178,17 +165,6 @@ public class SimulatorWindowController {
         stopSimulation();
         restoreObjects();
 
-        /*
-        physicalObjects.clear();
-        for (BouncingSprite bouncingSprite : initialObjectConfiguration) {
-            physicalObjects.add(new BouncingSprite(bouncingSprite));
-
-        }
-
-         */
-
-
-
     }
 
     @FXML
@@ -221,19 +197,6 @@ public class SimulatorWindowController {
             dialog.setTitle("New Object");
             dialog.initModality(Modality.WINDOW_MODAL);
             dialog.setDialogPane(view);
-
-            /*
-            Button applyButton = (Button) view.lookup("applyButton");
-            applyButton.setOnAction(event -> {
-                // Logica da eseguire quando viene premuto il pulsante "Applica"
-                // Esempio: Modifica dei dati nella finestra principale
-                BouncingSprite.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject());
-
-                // Chiudi la finestra di dialogo se necessario
-                // ((Dialog) applyButton.getScene().getWindow()).close();
-            });
-
-             */
 
             // Show the dialog and wait until the user closes it
             Optional<ButtonType> clickedButton = dialog.showAndWait();
@@ -273,19 +236,6 @@ public class SimulatorWindowController {
             dialog.initModality(Modality.WINDOW_MODAL);
             dialog.setDialogPane(view);
 
-            /*
-            Button applyButton = (Button) view.lookup("applyButton");
-            applyButton.setOnAction(event -> {
-                // Logica da eseguire quando viene premuto il pulsante "Applica"
-                // Esempio: Modifica dei dati nella finestra principale
-                BouncingSprite.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject());
-
-                // Chiudi la finestra di dialogo se necessario
-                // ((Dialog) applyButton.getScene().getWindow()).close();
-            });
-
-             */
-
             // Show the dialog and wait until the user closes it
             Optional<ButtonType> clickedButton = dialog.showAndWait();
 
@@ -314,24 +264,15 @@ public class SimulatorWindowController {
     }
 
     public void restoreObjects() {
-        /*
-        physicalObjects.clear();
-        simulationPane.getChildren().clear();
 
-        physicalObjects.addAll(initialObjectConfiguration);
-        simulationPane.getChildren().addAll(initialObjectConfiguration);
+        // In order to restore the physical objects, I have to
+        // construct a new ArrayList of new objects and link the
+        // references to physicalObjects and the simulationPane
 
-        physicalObjects.forEach(Sprite::display);
-
-         */
         List<BouncingSprite> newLink = new ArrayList<>();
-        //newLink.add(new BouncingSprite());
-
         for(BouncingSprite b : initialObjectConfiguration) {
             newLink.add(new BouncingSprite(b));
         }
-
-        //System.out.println("newLink: " + newLink.get(0).hashCode());
 
         physicalObjects.clear();
         simulationPane.getChildren().clear();
@@ -339,10 +280,8 @@ public class SimulatorWindowController {
 
         physicalObjects.addAll(newLink);
         simulationPane.getChildren().addAll(newLink);
+        physicalObjects.forEach(Sprite::display);
 
-        //System.out.println("physicalObjects: " + physicalObjects.get(0).hashCode());
-        //System.out.println("simulationPane: " + simulationPane.getChildren().get(1).hashCode());
-        physicalObjects.forEach(s -> s.display());
     }
 
 }

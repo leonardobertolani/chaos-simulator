@@ -3,6 +3,10 @@ package com.example.chaossimulator.curves;
 import com.example.chaossimulator.objects.PVector;
 import javafx.scene.canvas.GraphicsContext;
 
+/**
+ * Class extending the AnalyticalCurve interface and
+ * representing an hyperbolic cosine with equation y = ( b * ( e^a(x + xDrag)  +  e^-a(x + xDrag) )  /  2 ) + c
+ */
 public class AnalyticalHyperbolicCosine implements AnalyticalCurve {
 
     // y = ( b * ( e^a(x + xDrag)  +  e^-a(x + xDrag) )  /  2 ) + c
@@ -31,8 +35,8 @@ public class AnalyticalHyperbolicCosine implements AnalyticalCurve {
         // Remember that the y simulation axe is inverted
 
         // Define the properties
-        this.a = -a;
-        this.b = b;
+        this.a = a;
+        this.b = -b;
         this.c = gc.getCanvas().getHeight() - c;
         this.xDrag = xDrag;
 
@@ -43,12 +47,10 @@ public class AnalyticalHyperbolicCosine implements AnalyticalCurve {
     }
 
 
-
-
     /**
      * Constructs a standard hyperbolic cosine given a GraphicsContext
      * as an absolute frame of reference
-     * @param gc frame of reference for the parabola
+     * @param gc frame of reference for the hyperbolic cosine
      */
     public AnalyticalHyperbolicCosine(GraphicsContext gc) {
 
@@ -64,50 +66,6 @@ public class AnalyticalHyperbolicCosine implements AnalyticalCurve {
         this.vertex.y = computeY(this.vertex.x);
     }
 
-
-    public double getA() {
-        return a;
-    }
-
-    public void setA(double a) {
-        this.a = a;
-    }
-
-    public double getB() {
-        return b;
-    }
-
-    public void setB(double b) {
-        this.b = b;
-    }
-
-    public double getC() {
-        return c;
-    }
-
-    public void setC(double c) {
-        this.c = c;
-    }
-
-    public double getxDrag() {
-        return xDrag;
-    }
-
-    public void setxDrag(double xDrag) {
-        this.xDrag = xDrag;
-    }
-
-    public PVector getVertex() {
-        return vertex;
-    }
-
     @Override
-    public boolean containsPoint(double x, double y) {
-        return computeY(x) == y;
-    }
-
-    @Override
-    public double computeY(double x) {
-        return ( b * ( Math.exp(a*(x + xDrag))  +  Math.exp(-a*(x + xDrag)) )  /  2 )  +  c;
-    }
+    public double computeY(double x) { return ( b * ( Math.exp(a*(x + xDrag))  +  Math.exp(-a*(x + xDrag)) )  /  2 )  +  c; }
 }

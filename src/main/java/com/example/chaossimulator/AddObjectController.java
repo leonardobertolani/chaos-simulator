@@ -6,20 +6,8 @@ import com.example.chaossimulator.objects.PVector;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
-
-import java.security.InvalidParameterException;
-import java.util.InvalidPropertiesFormatException;
-import java.util.Optional;
-
-/*
-TO DO
-
-- Metti a posto l'eccezione che non genera l'alert
- */
 
 public class AddObjectController {
 
@@ -45,7 +33,7 @@ public class AddObjectController {
             xPositionField.textProperty().addListener((observable, oldValue, newValue) -> xLocation = Double.parseDouble(newValue));
             xPositionField.setText("500");
 
-            yPositionField.textProperty().addListener(((observable, oldValue, newValue) -> yLocation = canvas.getHeight() - Double.parseDouble(newValue)));
+            yPositionField.textProperty().addListener((observable, oldValue, newValue) -> yLocation = canvas.getHeight() - Double.parseDouble(newValue));
             yPositionField.setText("300");
 
 
@@ -60,23 +48,6 @@ public class AddObjectController {
     }
 
     public BouncingSprite getNewObject() {
-        /*
-        Optional<BouncingSprite> opt = Optional.empty();
-
-        try {
-            opt = Optional.of(new BouncingSprite(objectColorPicker.getValue(), new PVector(xLocation, yLocation), new PVector(xVelocity, yVelocity)));
-            return opt;
-        } catch (Exception e){
-            e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Errore");
-            alert.setContentText("Errore durante l'inserimento dell'oggetto");
-            alert.showAndWait();
-        }
-
-        return opt;
-
-             */
 
         return new BouncingSprite(objectColorPicker.getValue(), new PVector(xLocation, yLocation), new PVector(xVelocity, yVelocity));
 
