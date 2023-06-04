@@ -112,7 +112,6 @@ public class SimulatorWindowController {
         // Do simulation stuff
         physicalObjects.forEach(s -> {
             s.update();
-            s.display();
             checkBallBounds(s, curve);
         });
 
@@ -203,11 +202,8 @@ public class SimulatorWindowController {
 
             // Add new object to the Lists
             if (clickedButton.orElse(ButtonType.CANCEL) == ButtonType.OK) {
-                //if(controller.getNewObject().isPresent()) {
-                //BouncingSprite.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject().get());
                 generateDefaultPhysicalObject(controller.getNewObject());
                 initialObjectConfiguration.add(controller.getNewObject());
-                //}
 
             }
 
@@ -241,13 +237,8 @@ public class SimulatorWindowController {
 
             // Add new object to the Lists
             if (clickedButton.orElse(ButtonType.CANCEL) == ButtonType.OK) {
-                //if(controller.getNewObject().isPresent()) {
-                //BouncingSprite.generateDefaultPhysicalObject(simulationPane, physicalObjects, controller.getNewObject().get());
-                //generateDefaultPhysicalObjectSeries(simulationPane, physicalObjects, initialObjectConfiguration, controller.getNewSeries());
                 controller.getNewSeries().forEach(this::generateDefaultPhysicalObject);
                 initialObjectConfiguration.addAll(controller.getNewSeries());
-                //initialObjectConfiguration.forEach(s -> System.out.println(s));
-                //}
 
             }
 
@@ -280,7 +271,7 @@ public class SimulatorWindowController {
 
         physicalObjects.addAll(newLink);
         simulationPane.getChildren().addAll(newLink);
-        physicalObjects.forEach(Sprite::display);
+        physicalObjects.forEach(BouncingSprite::display);
 
     }
 

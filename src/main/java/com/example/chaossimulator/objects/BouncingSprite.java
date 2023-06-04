@@ -1,8 +1,10 @@
 package com.example.chaossimulator.objects;
 
 import com.example.chaossimulator.curves.AnalyticalCurve;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Shape;
 
 
 public class BouncingSprite extends Sprite {
@@ -23,7 +25,8 @@ public class BouncingSprite extends Sprite {
      * @param velocity the velocity for the new BouncingSprite object
      */
     public BouncingSprite(Color color, PVector location, PVector velocity) {
-        super(new Circle(BallsSettings.SPRITE_RADIUS, color),
+        super(  "default",
+                new Circle(BallsSettings.SPRITE_RADIUS, color),
                 location,
                 velocity,
                 BallsSettings.ACCELERATION);
@@ -34,14 +37,30 @@ public class BouncingSprite extends Sprite {
      * @param bs the BouncingSprite object to copy
      */
     public BouncingSprite(BouncingSprite bs) {
-        super(  bs.getView(),
+        super(  bs.getId(),
+                new Circle(((Circle)bs.getView()).getRadius(), ((Shape)bs.getView()).getFill()),
                 new PVector(bs.location.x, bs.location.y),
                 new PVector(bs.velocity.x, bs.velocity.y),
                 BallsSettings.ACCELERATION);
     }
 
     /**
-     * Decides wether the BouncingSprite object is colliding with an AnalyticalCurve object
+     * Returns the only Node associated with the BouncingSprite object
+     */
+    public Node getView() {
+        return getChildren().get(0);
+    }
+
+    /**
+     * Displays the BouncingSprite object on the screen based on its current position
+     */
+    public void display() {
+        setTranslateX(location.x);
+        setTranslateY(location.y);
+    }
+
+    /**
+     * Decides whether the BouncingSprite object is colliding with an AnalyticalCurve object
      * @param curve the AnalyticalCurve object to check for
      * @return a boolean value representing the collision (true) or not (false)
      */
