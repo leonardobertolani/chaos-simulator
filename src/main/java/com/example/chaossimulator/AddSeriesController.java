@@ -38,7 +38,7 @@ public class AddSeriesController {
         xVelocityField.textProperty().addListener((observable, oldValue, newValue) -> xVelocity = Double.parseDouble(xVelocityField.getText()));
         xVelocityField.setText("0");
 
-        yVelocityField.textProperty().addListener(((observable, oldValue, newValue) -> yVelocity = Double.parseDouble(yVelocityField.getText())));
+        yVelocityField.textProperty().addListener(((observable, oldValue, newValue) -> yVelocity = -Double.parseDouble(yVelocityField.getText())));
         yVelocityField.setText("0");
 
         ObjectNumberField.textProperty().addListener((observable, oldValue, newValue) -> objectNumber = Integer.parseInt(ObjectNumberField.getText()));
@@ -50,6 +50,7 @@ public class AddSeriesController {
     }
 
     public List<BouncingSprite> getNewSeries() {
+
         List<BouncingSprite> list = new ArrayList<>();
 
         for(int i = 0; i < objectNumber; ++i) {
